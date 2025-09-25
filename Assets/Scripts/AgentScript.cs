@@ -13,6 +13,10 @@ public class AgentScript : MonoBehaviour
     [SerializeField] float velocity;
     [SerializeField] Transform currentDestination;
     [SerializeField] int currentPatrolPointIndex;
+    [SerializeField] RaycastSight rayCastSight;
+    [SerializeField] Transform playerTR;
+    float countdown = 2;
+    bool detectado = false;
 
     private void Awake()
     {
@@ -28,21 +32,36 @@ public class AgentScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (agent.hasPath && agent.remainingDistance <= arrivalDistance)
+        if (rayCastSight.raycastHit == "Player")
         {
-            if(currentPatrolPointIndex < patrolPoints.Length - 1)
-            {
-                currentPatrolPointIndex++;
-            }
-            else
-            {
-                currentPatrolPointIndex = 0;
-            }
-
-            currentDestination = patrolPoints[currentPatrolPointIndex];
+            agent.destination = playerTR.position;
+            detectado = true;
+            countdown = 2;
         }
-        agent.destination = currentDestination.position;
-        velocity = agent.velocity.magnitude;
-        anim.SetFloat("Speed",velocity);
+        else if (agent.remainingDistance > 2 && countdown >= 0 && detectado)
+        {
+            countdown -= Time.deltaTime;
+            Debug.Log(countdown);
+        }
+        else if(countdown <= 0 || !detectado)
+        {
+            detectado = false;
+            if (agent.hasPath && agent.remainingDistance <= arrivalDistance)
+            {
+                if (currentPatrolPointIndex < patrolPoints.Length - 1)
+                {
+                    currentPatrolPointIndex++;
+                }
+                else
+                {
+                    currentPatrolPointIndex = 0;
+                }
+
+                currentDestination = patrolPoints[currentPatrolPointIndex];
+            }
+            agent.destination = currentDestination.position;
+            velocity = agent.velocity.magnitude;
+            anim.SetFloat("Speed", velocity);
+        }
     }
-}
+    }
