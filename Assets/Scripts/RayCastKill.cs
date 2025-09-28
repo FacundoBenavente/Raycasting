@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RaycastSight : MonoBehaviour
+public class RayCastKill : MonoBehaviour
 {
     [SerializeField] Transform originTR;
     [SerializeField] float rayLength;
     public string raycastHit;
-    public bool rayCastHitting = false;
-
     // Start is called before the first frame update
     void Start()
     {
-        originTR = GetComponent<Transform>();   
+        
     }
 
     // Update is called once per frame
@@ -22,18 +20,17 @@ public class RaycastSight : MonoBehaviour
         if (Physics.Raycast(originTR.position, originTR.forward, out hitInfo, rayLength))
         {
             raycastHit = hitInfo.collider.name;
-            rayCastHitting = true;
-        } else
-        {
-            rayCastHitting = false;
         }
+
     }
 
 
     private void OnDrawGizmos()
     {
-        Color color = Color.red;
+        Color color = Color.green;
         Gizmos.color = color;
         Gizmos.DrawLine(originTR.position, originTR.position + originTR.forward * rayLength);
     }
 }
+
+

@@ -32,18 +32,19 @@ public class AgentScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (rayCastSight.raycastHit == "Player")
+        if (rayCastSight.raycastHit == "Player" && rayCastSight.rayCastHitting)
         {
             agent.destination = playerTR.position;
             detectado = true;
             countdown = 2;
         }
-        else if (agent.remainingDistance > 2 && countdown >= 0 && detectado)
+         if ((rayCastSight.raycastHit != "Player"  || !rayCastSight.rayCastHitting) && countdown >= 0 && detectado)
         {
+            agent.destination = playerTR.position;
             countdown -= Time.deltaTime;
             Debug.Log(countdown);
         }
-        else if(countdown <= 0 || !detectado)
+         if(countdown <= 0 || !detectado)
         {
             detectado = false;
             if (agent.hasPath && agent.remainingDistance <= arrivalDistance)
